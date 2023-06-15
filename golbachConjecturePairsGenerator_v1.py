@@ -3,19 +3,33 @@ import time
 import numpy as np
 
 
+#The prime and the Closest Value Functions are scraped Over stackoverflow and A python discord , 
+
 def closest_value(l:list, n:int):
     
+    ''' 
+        This Gives you the index of the value that is  <= to N inside a list l of integers 
+        this usefull solution is provided by Riemann user  on  Python Discord server
+        I think It could be improve on a larger list by diving the list and comparing the last N on the first list, and the number on the middle of the second list
+        We do keep only the list on wich this numbers are Equal or less than the number, if on both list the numbers are less than the n Number I use I number of the bigger chunk
+        something like that, Is just an estimated on wich we take away parts of an initially order list, and estimate The samller set of List Elemnt that we can quickly cut down to
+        It's important to store the index, so a good Practice is eplicitly story Index and number on a Tuple list.
+        This is the next versión aimed so I can increae the List Slicing Part of the Recursive function and run faster.
+                   
+    ''''
+
     def find_index(dict, value):
-        
+       
         for key, val in dict.items():
             if val == value:
                 return key
         return None
 
     d = {}  
-    
+    #we iterate over the list , for small list is ok, but for big list could be an overhead
     for i in range(len(l)):
         if (n - l[i]) >= 0:
+            # This is storing i  on the dict d and also calling the value of the item on the list l
             d[i] = n - l[i]
     
     return find_index(d, min(d.values()))
@@ -24,7 +38,8 @@ def closest_value(l:list, n:int):
 def primes(n):
     
    # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-   #prime calculation
+   # prime calculation, this is totally a stack overflow scrap
+   # this one was the fastest Implementation I found
        
    limit = n
    end = limit + 1
@@ -195,7 +210,7 @@ def GolbachConjectureToN(N):
         f.write("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n ".format(x,x1,golbachTime)) 
     total = sum(Tsum)
     f.write("\n Total Time: {} Secs \n".format(total))  
-                     
-#n = 1000000
+
+#n = 10000
 #print(GolbachConjectureToN(n))
     
