@@ -3,43 +3,117 @@ import time
 import numpy as np
 
 
-#The prime and the Closest Value Functions are scraped Over stackoverflow and A python discord , 
-
-def closest_value(l:list, n:int):
+def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
+  
+  n2 = 0
+  l = initialL[indexSlicers[0]:indexSlicers[1]]
+  if debug:
+      print("index Slicers: {} \n\n l: {} \n\n n : {} \n\n ".format(indexSlicers,l,n))     
+  
+  for x,v in enumerate(l):
     
-    ''' 
-        This Gives you the index of the value that is  <= to N inside a list l of integers 
-        this usefull solution is provided by Riemann user  on  Python Discord server
-        I think It could be improve on a larger list by diving the list and comparing the last N on the first list, and the number on the middle of the second list
-        We do keep only the list on wich this numbers are Equal or less than the number, if on both list the numbers are less than the n Number I use I number of the bigger chunk
-        something like that, Is just an estimated on wich we take away parts of an initially order list, and estimate The samller set of List Elemnt that we can quickly cut down to
-        It's important to store the index, so a good Practice is eplicitly story Index and number on a Tuple list.
-        This is the next versión aimed so I can increae the List Slicing Part of the Recursive function and run faster.
-                   
-    ''''
-
-    def find_index(dict, value):
+    
+    IfEqual = (v == n)
+    IfLess = (v < n)
+    IfBigger = (v > n)
+    conditions = []
+    
+    conditions.append(IfEqual)
+    conditions.append(IfLess)
+    conditions.append(IfBigger)
+    
+    index = indexSlicers[0] + x 
+    
+    v2 = initialL[index]  
+    
+    if debug:
+      print("condition : {} \n\n n: {} \n x: {} \n index: {} \n value loop: {} \n value on list: {} ".format(conditions,n,x,index,v,v2))   
+   
+    if IfEqual:
+        n2 = index 
+        break
+    if IfLess:
+        #we append the index of the values
+        n2 = index  
+        
+    if IfBigger:
+        n2 = index-1    
+        break  
+  
+  if debug:
+      print("n final: {} ".format(n2))  
+   
+   
+  return n2
+  
+  #Give us the last appenden object 
        
-        for key, val in dict.items():
-            if val == value:
-                return key
-        return None
-
-    d = {}  
-    #we iterate over the list , for small list is ok, but for big list could be an overhead
-    for i in range(len(l)):
-        if (n - l[i]) >= 0:
-            # This is storing i  on the dict d and also calling the value of the item on the list l
-            d[i] = n - l[i]
+def EqualorSmallerIndexOnListToN(n:int, l:list, debug=False):
     
-    return find_index(d, min(d.values()))
+    # l is a sorted list
+
+    lenL = len(l)
+    leftSlice = 0
+    rightSlice = lenL
+    indexSlicers=[leftSlice,rightSlice]
+    initialL = l
+    d = 100
+    def FindNearNumberbyHalfingSignComparison(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
+             
+      ifNBiggerThanlenL = ( initialL[-1] <= n)    
+      if ifNBiggerThanlenL:    
+        return lenL-1
+            
+      ifLenNLessorEqualltoD = (lenL <= d)
+       
+      if  ifLenNLessorEqualltoD:    
+        #we short the loop when we reach d element        
+        return nearestEqualOrSmallerIndex(n,indexSlicers,initialL,debug)          
+            
+      half = int(lenL/2)
+      index = indexSlicers[0] + half
+      value = initialL[index] 
+      conditions=[]
+       
+      IfBigger = (n > value)
+      IfEqual = (n == value)
+      IfLess = (n < value)
+      
+      conditions.append(IfBigger)
+      conditions.append(IfEqual)
+      conditions.append(IfLess)
+      
+      if debug:
+       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers) )
+  
+      if IfEqual:
+    
+         return  index
+        
+      if IfBigger:
+         indexSlicers[0] = index          
+         l = initialL[indexSlicers[0]:indexSlicers[1]]
+         lenL = len(l)
+         
+         return FindNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )
+      
+      #and slice the parts from the array that are   
+
+      if IfLess:
+         indexSlicers[1] = index                   
+         l = initialL[indexSlicers[0]:indexSlicers[1]]
+         lenL = len(l)
+         return FindNearNumberbyHalfingSignComparison(d,n , lenL ,indexSlicers, initialL, debug)
+      
+      
+    return FindNearNumberbyHalfingSignComparison(d, n, lenL, indexSlicers, initialL, debug )
 
 
+    
 def primes(n):
     
    # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-   # prime calculation, this is totally a stack overflow scrap
-   # this one was the fastest Implementation I found
+   # fastest prime calculation I found
        
    limit = n
    end = limit + 1
@@ -73,9 +147,10 @@ def GolbachConjecture(n, p, debug=False):
   
   nStart = n
        
-  def GolbachConjecturePairs( p, loopIter = 0, n= 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):
+  def GolbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):
      
-     sliceN = closest_value(p, n)
+     
+     sliceN = EqualorSmallerIndexOnListToN(n,p,debug)
      sliceN2 = sliceN+1
      pList = p[:sliceN2]
      
@@ -83,19 +158,14 @@ def GolbachConjecture(n, p, debug=False):
       
        print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))
           
-     #slice List    
-     
-     
      if debug :
         
        print("slice index: {}\n prime List : {}\n sliced Prime List: {} \n".format(sliceN,p, pList))  
-    
+
      #we get ride of any MaxPrime who end up with a 1 at the end of the sum
     
      if removeMax == True:
-        
-       #only if Previous Solution didn't work we remove previous MAX
-         
+       #only if Previous Solution didn't work we remove previous MAX     
        pList = [i for i in pList if i not in maxP]
        
        if debug :
@@ -178,27 +248,24 @@ def GolbachConjecture(n, p, debug=False):
            
            return GolbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)
          
-         
-         if len(pSum) == 2: 
-             
-             
+         if len(pSum) == 2:      
            # This is our Valid Pair, got it!.
                    
            return pSum
-     
+    
   return  GolbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
 
 
 
-def GolbachConjectureToN(N):
+def GolbachConjectureToN(n):
+  
    '''This writes All the pair to the N number and gives the time it take per each one'''    
-   p = primes(N)
-   N = list(range(2, N+1))
+   p = primes(n)
+   n = list(range(2, n+1))
    Tsum=[]
-   with open('log2.txt', 'w') as f:
-                
-    for x in N:
-             
+   
+   with open('log2.txt', 'w') as f:            
+    for x in n:
      if x%2 == 0:
        
         prime_tic = time.perf_counter()         
@@ -207,10 +274,40 @@ def GolbachConjectureToN(N):
         golbachTime = prime_toc - prime_tic
         Tsum.append(golbachTime)
         
-        f.write("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n ".format(x,x1,golbachTime)) 
+        f.write("\n Number : {} \n Pairs = {}\n Pair RunTime = {} Secs \n ".format(x,x1,golbachTime)) 
     total = sum(Tsum)
+    
     f.write("\n Total Time: {} Secs \n".format(total))  
+          
 
-#n = 10000
-#print(GolbachConjectureToN(n))
+
+def GolbachConjecturePair(n:int,debug=False):
+  
+   '''This writes on pair each one'''    
+   p = primes(n)
+   
+   n = list(range(2, n+1,2))
+   nAndPairs=[]
+   runTime=[]
+   for e,x in enumerate(n):
+     prime_tic = time.perf_counter()   
+     x1 = GolbachConjecture(x ,p, debug)
+     prime_toc = time.perf_counter()
+     itemTime = prime_toc - prime_tic
+     runTime.append(itemTime)
+     nAndPairs.append(x)
+     nAndPairs.append(x1)
+     if debug:
+      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n ".format(x,x1,itemTime)) 
+   
+   total = sum(runTime)                  
+   print(total)              
+   return runTime,nAndPairs      
+             
+n = 10000
+
+print(GolbachConjecturePair(n , debug=False))
+
+
+# print(GolbachConjectureToN(n))
     
