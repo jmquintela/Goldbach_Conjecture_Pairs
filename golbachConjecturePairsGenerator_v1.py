@@ -11,22 +11,17 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
       print("index Slicers: {} \n\n l: {} \n\n n : {} \n\n ".format(indexSlicers,l,n))     
   
   for x,v in enumerate(l):
-    
-    
     IfEqual = (v == n)
     IfLess = (v < n)
     IfBigger = (v > n)
-    conditions = []
-    
-    conditions.append(IfEqual)
-    conditions.append(IfLess)
-    conditions.append(IfBigger)
-    
     index = indexSlicers[0] + x 
-    
     v2 = initialL[index]  
     
     if debug:
+      conditions = []
+      conditions.append(IfEqual)
+      conditions.append(IfLess)
+      conditions.append(IfBigger)
       print("condition : {} \n\n n: {} \n x: {} \n index: {} \n value loop: {} \n value on list: {} ".format(conditions,n,x,index,v,v2))   
    
     if IfEqual:
@@ -42,30 +37,25 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
   
   if debug:
       print("n final: {} ".format(n2))  
-   
-   
-  return n2
-  
-  #Give us the last appenden object 
+
+  return n2  
        
 def equalorSmallerIndexOnListToN(n:int, l:list, debug=False):
     
     # l is a sorted list
-
     lenL = len(l)
     leftSlice = 0
     rightSlice = lenL
     indexSlicers=[leftSlice,rightSlice]
     initialL = l
     d = 100
+  
     def findNearNumberbyHalfingSignComparison(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
              
       ifNBiggerThanlenL = ( initialL[-1] <= n)    
       if ifNBiggerThanlenL:    
         return lenL-1
-            
       ifLenNLessorEqualltoD = (lenL <= d)
-       
       if  ifLenNLessorEqualltoD:    
         #we short the loop when we reach d element        
         return nearestEqualOrSmallerIndex(n,indexSlicers,initialL,debug)          
@@ -73,213 +63,115 @@ def equalorSmallerIndexOnListToN(n:int, l:list, debug=False):
       half = int(lenL/2)
       index = indexSlicers[0] + half
       value = initialL[index] 
-      conditions=[]
+      
        
       IfBigger = (n > value)
       IfEqual = (n == value)
       IfLess = (n < value)
       
-      conditions.append(IfBigger)
-      conditions.append(IfEqual)
-      conditions.append(IfLess)
-      
       if debug:
-       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers) )
-  
-      if IfEqual:
-    
-         return  index
-        
+       conditions=[]
+       conditions.append(IfBigger)
+       conditions.append(IfEqual)
+       conditions.append(IfLess)
+       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers)
+      if IfEqual:    
+         return  index   
       if IfBigger:
          indexSlicers[0] = index          
          l = initialL[indexSlicers[0]:indexSlicers[1]]
          lenL = len(l)
          
-         return findNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )
-      
-      #and slice the parts from the array that are   
+         return findNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )  
 
       if IfLess:
          indexSlicers[1] = index                   
          l = initialL[indexSlicers[0]:indexSlicers[1]]
          lenL = len(l)
          return findNearNumberbyHalfingSignComparison(d,n , lenL ,indexSlicers, initialL, debug)
-      
-      
+
     return findNearNumberbyHalfingSignComparison(d, n, lenL, indexSlicers, initialL, debug )
-
-
     
 def primes(n):
-    
    # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-   # fastest prime calculation I found
        
    limit = n
    end = limit + 1
    composite = np.zeros(((end + 7) // 8,), dtype = np.uint8)
    
-   for i in range(3, int(end ** 0.5 + 2.01)):
-       
-       if not (composite[i // 8] & (1 << (i % 8))):
-           
-           for j in range(i * i, end, i):
-                            
+   for i in range(3, int(end ** 0.5 + 2.01)):       
+       if not (composite[i // 8] & (1 << (i % 8))):      
+           for j in range(i * i, end, i):                        
              composite[j // 8] |= 1 << (j % 8)
                
    return np.array([2] + [i for i in range(3, end, 2)
        if not (composite[i // 8] & (1 << (i % 8)))], dtype = np.uint32)
     
-   
 def golbachConjecture(n, p, debug=False):
       
-  if debug : 
-      
-   print("Primes: {} \n".format(p))
-  
+  if debug :       
+   print("Primes: {} \n".format(p))  
   pSum = [] 
-
-  loopIter = 0
- 
-  removeMax = False 
-  
-  maxP=[]
-  
-  nStart = n
-       
-  def golbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):
-     
-     
+  loopIter = 0 
+  removeMax = False   
+  maxP=[]  
+  nStart = n  
+  def golbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):     
      sliceN = equalorSmallerIndexOnListToN(n,p,debug)
      sliceN2 = sliceN+1
-     pList = p[:sliceN2]
-     
-     if debug : 
-      
-       print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))
-          
-     if debug :
-        
+     pList = p[:sliceN2]     
+     if debug :       
+       print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))          
+     if debug :       
        print("slice index: {}\n prime List : {}\n sliced Prime List: {} \n".format(sliceN,p, pList))  
-
-     #we get ride of any MaxPrime who end up with a 1 at the end of the sum
-    
+     #we get ride of any MaxPrime who end up with a 1 at the end of the sum  
      if removeMax == True:
        #only if Previous Solution didn't work we remove previous MAX     
-       pList = [i for i in pList if i not in maxP]
-       
-       if debug :
-            
-        print("prime List with Max removed: {} \n, maxP: {} \n: ".format(pList, maxP))  
-    
-     
-     pListSort = sorted(pList,reverse=True)
-     
-     if debug :
-         
-      print("Sorted Prime List: {} \n".format(pListSort))  
-    
-     p1 = int(pListSort[0])
-          
-     
-     if debug :
-            
-       print("MaxPrime P1: {} \n ".format(p1))  
-     
-     
-     if loopIter == 0 :
-       
+       pList = [i for i in pList if i not in maxP]     
+       if debug :           
+        print("prime List with Max removed: {} \n, maxP: {} \n: ".format(pList, maxP))      
+     pListSort = sorted(pList,reverse=True)     
+     if debug :     
+      print("Sorted Prime List: {} \n".format(pListSort))    
+     p1 = int(pListSort[0]) 
+     if debug :         
+       print("MaxPrime P1: {} \n ".format(p1))       
+     if loopIter == 0 :    
         #We Only Append the Last Avaiblable Max on the start of the loop 
-      
-        maxP.append(p1)
-            
+        maxP.append(p1)            
+     if debug :         
+        print("maxP : {} \n".format(maxP))         
+     pSum.append(p1)     
      if debug :
-          
-        print("maxP : {} \n".format(maxP))
-       
-            
-     pSum.append(p1)
-     
-        
-     if debug :
-       
-         print("pSum : {} \n ".format(pSum))  
-          
-     n2 = (n - p1)
-                                         
-             
-     if n2 != 0 :
-          
-         
-        if len(pSum) >= 2:
-          
+        print("pSum : {} \n ".format(pSum))           
+     n2 = (n - p1)                                                  
+     if n2 != 0 :  
+        if len(pSum) >= 2:          
             loopIter = 0
             removeMax = True
             pSum = []
-            return golbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )
-        
-        if n2 == 1:
-          
+            return golbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )       
+        if n2 == 1:          
             removeMax = True
             loopIter = 0
-            pSum = []
-            
-            return golbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )
-     
-        if n2 != 1:
-              
+            pSum = []            
+            return golbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )   
+        if n2 != 1:        
              removeMax = False   
              loopIter += 1
-             
-             return golbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)
-           
-                
+             return golbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)                       
      if n2 == 0 :
-       
-       
+  
          if len(pSum) > 2:
-             
-             
+       
            loopIter = 0
-           
            pSum = [] #reset the sum 
-           
            removeMax = True #but remove the latest MaxP we added
-           
-           return golbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)
-         
+           return golbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)      
          if len(pSum) == 2:      
            # This is our Valid Pair, got it!.
-                   
-           return pSum
-    
+           return pSum   
   return  golbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
-
-
-
-def golbachConjectureToN(n):
-  
-   '''This writes All the pair to the N number and gives the time it take per each one'''    
-   p = primes(n)
-   n = list(range(2, n+1))
-   Tsum=[]
-   
-   with open('log2.txt', 'w') as f:            
-    for x in n:
-     if x%2 == 0:
-       
-        prime_tic = time.perf_counter()         
-        x1 = GolbachConjecture(x ,p, debug=False)
-        prime_toc = time.perf_counter()
-        golbachTime = prime_toc - prime_tic
-        Tsum.append(golbachTime)
-        
-        f.write("\n Number : {} \n Pairs = {}\n Pair RunTime = {} Secs \n ".format(x,x1,golbachTime)) 
-    total = sum(Tsum)
-    
-    f.write("\n Total Time: {} Secs \n".format(total))  
-          
-
 
 def golbachConjecturePair(n:int,debug=False):
   
@@ -308,7 +200,4 @@ def golbachConjecturePair(n:int,debug=False):
 n = 1000000
 
 print(golbachConjecturePair(n , debug=False))
-
-
-# print(GolbachConjectureToN(n))
     
