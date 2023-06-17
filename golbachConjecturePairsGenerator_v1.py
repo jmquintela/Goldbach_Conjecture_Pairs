@@ -180,14 +180,15 @@ def golbachConjecturePair(n:int,debug=False):
    prime_tic = time.perf_counter()  
    p = primes(n)
    prime_toc = time.perf_counter()
+   primeTime = prime_toc - prime_tic
    n = list(range(2, n+1,2))
    nAndPairs=[]
    runTime=[]
    for e,x in enumerate(n):
-     prime_tic = time.perf_counter()   
+     gold_tic = time.perf_counter()   
      x1 = golbachConjecture(x ,p, debug)
      gold_toc = time.perf_counter()
-     itemTime = prime_toc - prime_tic
+     itemTime = gold_toc - gold_tic
      runTime.append(itemTime)
      nAndPairs.append(x)
      nAndPairs.append(x1)
@@ -195,9 +196,9 @@ def golbachConjecturePair(n:int,debug=False):
       print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n ".format(x,x1,itemTime)) 
    
    total = sum(runTime)                  
-   print(total)              
+   print("total time of GoldbachF : {} \n Prime F time: {}".format(total,primeTime))              
    return runTime,nAndPairs      
              
-n = 1000000
+n = 100000
 
 print(golbachConjecturePair(n , debug=False))
