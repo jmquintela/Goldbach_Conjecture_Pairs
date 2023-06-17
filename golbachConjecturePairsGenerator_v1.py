@@ -22,7 +22,7 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
       conditions.append(IfEqual)
       conditions.append(IfLess)
       conditions.append(IfBigger)
-      print("condition : {} \n\n n: {} \n x: {} \n index: {} \n value loop: {} \n value on list: {} ".format(conditions,n,x,index,v,v2))   
+      print("conditions : {} \n\n n: {} \n x: {} \n index: {} \n value loop: {} \n value on list: {} ".format(conditions,n,x,index,v,v2))   
    
     if IfEqual:
         n2 = index 
