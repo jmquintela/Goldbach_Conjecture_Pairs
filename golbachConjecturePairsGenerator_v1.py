@@ -74,7 +74,8 @@ def equalorSmallerIndexOnListToN(n:int, l:list, debug=False):
        conditions.append(IfBigger)
        conditions.append(IfEqual)
        conditions.append(IfLess)
-       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers)
+       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers))
+      
       if IfEqual:    
          return  index   
       if IfBigger:
@@ -200,4 +201,3 @@ def golbachConjecturePair(n:int,debug=False):
 n = 1000000
 
 print(golbachConjecturePair(n , debug=False))
-    
