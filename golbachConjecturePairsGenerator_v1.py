@@ -48,7 +48,7 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
   
   #Give us the last appenden object 
        
-def EqualorSmallerIndexOnListToN(n:int, l:list, debug=False):
+def equalorSmallerIndexOnListToN(n:int, l:list, debug=False):
     
     # l is a sorted list
 
@@ -58,7 +58,7 @@ def EqualorSmallerIndexOnListToN(n:int, l:list, debug=False):
     indexSlicers=[leftSlice,rightSlice]
     initialL = l
     d = 100
-    def FindNearNumberbyHalfingSignComparison(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
+    def findNearNumberbyHalfingSignComparison(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
              
       ifNBiggerThanlenL = ( initialL[-1] <= n)    
       if ifNBiggerThanlenL:    
@@ -95,7 +95,7 @@ def EqualorSmallerIndexOnListToN(n:int, l:list, debug=False):
          l = initialL[indexSlicers[0]:indexSlicers[1]]
          lenL = len(l)
          
-         return FindNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )
+         return findNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )
       
       #and slice the parts from the array that are   
 
@@ -103,10 +103,10 @@ def EqualorSmallerIndexOnListToN(n:int, l:list, debug=False):
          indexSlicers[1] = index                   
          l = initialL[indexSlicers[0]:indexSlicers[1]]
          lenL = len(l)
-         return FindNearNumberbyHalfingSignComparison(d,n , lenL ,indexSlicers, initialL, debug)
+         return findNearNumberbyHalfingSignComparison(d,n , lenL ,indexSlicers, initialL, debug)
       
       
-    return FindNearNumberbyHalfingSignComparison(d, n, lenL, indexSlicers, initialL, debug )
+    return findNearNumberbyHalfingSignComparison(d, n, lenL, indexSlicers, initialL, debug )
 
 
     
@@ -131,7 +131,7 @@ def primes(n):
        if not (composite[i // 8] & (1 << (i % 8)))], dtype = np.uint32)
     
    
-def GolbachConjecture(n, p, debug=False):
+def golbachConjecture(n, p, debug=False):
       
   if debug : 
       
@@ -147,10 +147,10 @@ def GolbachConjecture(n, p, debug=False):
   
   nStart = n
        
-  def GolbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):
+  def golbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):
      
      
-     sliceN = EqualorSmallerIndexOnListToN(n,p,debug)
+     sliceN = equalorSmallerIndexOnListToN(n,p,debug)
      sliceN2 = sliceN+1
      pList = p[:sliceN2]
      
@@ -216,7 +216,7 @@ def GolbachConjecture(n, p, debug=False):
             loopIter = 0
             removeMax = True
             pSum = []
-            return GolbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )
+            return golbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )
         
         if n2 == 1:
           
@@ -224,14 +224,14 @@ def GolbachConjecture(n, p, debug=False):
             loopIter = 0
             pSum = []
             
-            return GolbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )
+            return golbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )
      
         if n2 != 1:
               
              removeMax = False   
              loopIter += 1
              
-             return GolbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)
+             return golbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)
            
                 
      if n2 == 0 :
@@ -244,20 +244,20 @@ def GolbachConjecture(n, p, debug=False):
            
            pSum = [] #reset the sum 
            
-           RemoveMax = True #but remove the latest MaxP we added
+           removeMax = True #but remove the latest MaxP we added
            
-           return GolbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)
+           return golbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)
          
          if len(pSum) == 2:      
            # This is our Valid Pair, got it!.
                    
            return pSum
     
-  return  GolbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
+  return  golbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
 
 
 
-def GolbachConjectureToN(n):
+def golbachConjectureToN(n):
   
    '''This writes All the pair to the N number and gives the time it take per each one'''    
    p = primes(n)
@@ -281,18 +281,19 @@ def GolbachConjectureToN(n):
           
 
 
-def GolbachConjecturePair(n:int,debug=False):
+def golbachConjecturePair(n:int,debug=False):
   
-   '''This writes on pair each one'''    
+   '''This writes on pair each one'''   
+   prime_tic = time.perf_counter()  
    p = primes(n)
-   
+   prime_toc = time.perf_counter()
    n = list(range(2, n+1,2))
    nAndPairs=[]
    runTime=[]
    for e,x in enumerate(n):
      prime_tic = time.perf_counter()   
-     x1 = GolbachConjecture(x ,p, debug)
-     prime_toc = time.perf_counter()
+     x1 = golbachConjecture(x ,p, debug)
+     gold_toc = time.perf_counter()
      itemTime = prime_toc - prime_tic
      runTime.append(itemTime)
      nAndPairs.append(x)
@@ -304,9 +305,9 @@ def GolbachConjecturePair(n:int,debug=False):
    print(total)              
    return runTime,nAndPairs      
              
-n = 10000
+n = 1000000
 
-print(GolbachConjecturePair(n , debug=False))
+print(golbachConjecturePair(n , debug=False))
 
 
 # print(GolbachConjectureToN(n))
