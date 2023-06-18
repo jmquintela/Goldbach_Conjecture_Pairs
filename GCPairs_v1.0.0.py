@@ -137,7 +137,9 @@ def goldbachConjecture(n, p, debug=False):
   def goldbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):     
     
      if nStart<=2:
-      return [2]
+      MaxPLen = 0
+      pSum=[2]
+      return pSum ,MaxPLen
     
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
      
@@ -192,12 +194,15 @@ def goldbachConjecture(n, p, debug=False):
            return goldbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)      
          if len(pSum) == 2:      
            # This is our Valid Pair, got it!.
-           MaxPLen= int(len(maxP))
+           MaxPLen = int(len(maxP))
            if debug:
             print("n: {}\nMaxP : {} \nPsum: {}\n".format(nStart,MaxPLen,pSum))
-           return pSum
+           
+           return pSum,MaxPLen
          
-  return  goldbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
+  Psum,MaxPLen =  goldbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)  
+      
+  return Psum,MaxPLen
 
 def goldbachConjecturePair(n:int,debug=False):
   
@@ -210,24 +215,37 @@ def goldbachConjecturePair(n:int,debug=False):
    n = list(range(2, n+2,2))
    nAndPairs=[]
    runTime=[]
+   maxP=0
+   costlyItem=float(0)
+   recursionCount=0
    
    for e,x in enumerate(n):
+     
      gold_tic = time.perf_counter()   
-     x1 = goldbachConjecture(x,p,debug)
+     x1,maxP = goldbachConjecture(x,p,debug)
      gold_toc = time.perf_counter()
      itemTime = gold_toc - gold_tic
      runTime.append(itemTime)
      nAndPairs.append(x)
-     nAndPairs.append(x1)
+     nAndPairs.append(x1) 
+     
+     if itemTime >= costlyItem:
+       costlyItem = itemTime
+       costlyNumber = x
+     if maxP >= recursionCount :
+       recursionCount = maxP
+       currentBiggerNumberofRecursion = x
+     
      if debug:
-      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n".format(x,x1,itemTime))                     
+      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n".format(x,x1,itemTime,currentBiggerNumberofRecursion,recursionCount ))                     
               
-   return runTime,nAndPairs      
+   return runTime,nAndPairs  ,recursionCount,currentBiggerNumberofRecursion  ,costlyItem ,costlyNumber
    
              
-n = 100000
+n = 10000
 debug=False
-t,p = goldbachConjecturePair(n , debug)
+t,p,r,Nr,Ci,Cn= goldbachConjecturePair(n , debug)
 
-print("Goldbach prime pairs sums: {} \n total Run Time: {} seconds \n".format(p,sum(t)))
+print("total Run Time: {} seconds \n biggest Recursion count : {}\n Costly number : {} \n Costly Item:{}\n Constly Number: {}\n".format(sum(t),r,Nr,Ci ,Cn))
 #print("total Run Time: {} seconds \n Prime List: {}".format(sum(t),p))
+
