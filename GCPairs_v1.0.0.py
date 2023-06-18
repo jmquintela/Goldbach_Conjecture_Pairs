@@ -138,10 +138,14 @@ def goldbachConjecture(n, p, debug=False):
     
      if nStart<=2:
       return [2]
+    
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
+     
      if debug:
       print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
+     
      pList = p[:sliceN+1]   
+     
      if debug :       
        print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))          
      #we get ride of any MaxPrime who end up with a 1 at the end of the sum  
@@ -150,11 +154,8 @@ def goldbachConjecture(n, p, debug=False):
        pList = [i for i in pList if i not in maxP]     
        if debug :           
         print("prime List with Max removed: {} \n, maxP: {} \n: ".format(pList, maxP))      
-     pListSort = sorted(pList,reverse=True)    
-      
-     if debug :     
-      print("Sorted Prime List: {} \n".format(pListSort))    
      p1 = pList[-1]
+     
      if debug :         
        print("MaxPrime P1: {} \n ".format(p1))       
      if loopIter == 0 :    
@@ -206,7 +207,7 @@ def goldbachConjecturePair(n:int,debug=False):
    prime_toc = time.perf_counter()
    primeTime = prime_toc - prime_tic
    print("prime list runTime: {} \n".format(primeTime))
-   n = list(range(1, n+2,2))
+   n = list(range(2, n+2,2))
    nAndPairs=[]
    runTime=[]
    
@@ -222,8 +223,9 @@ def goldbachConjecturePair(n:int,debug=False):
       print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n".format(x,x1,itemTime))                     
               
    return runTime,nAndPairs      
+   
              
-n = 1000000
+n = 100000
 debug=False
 t,p = goldbachConjecturePair(n , debug)
 
