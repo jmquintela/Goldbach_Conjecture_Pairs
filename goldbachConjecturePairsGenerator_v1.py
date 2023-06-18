@@ -141,13 +141,9 @@ def goldbachConjecture(n, p, debug=False):
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
      if debug:
       print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
-  
-     pList = p[:sliceN+1]  
-     print(pList)   
+     pList = p[:sliceN+1]   
      if debug :       
        print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))          
-     if debug :       
-       print("slice index: {}\n slice index2: {}\n prime List : {}\n sliced Prime List: {} \n".format(sliceN ,p, pList))  
      #we get ride of any MaxPrime who end up with a 1 at the end of the sum  
      if removeMax == True:
        #only if Previous Solution didn't work we remove previous MAX     
@@ -158,7 +154,7 @@ def goldbachConjecture(n, p, debug=False):
       
      if debug :     
       print("Sorted Prime List: {} \n".format(pListSort))    
-     p1 = int(pListSort[0]) 
+     p1 = pList[-1]
      if debug :         
        print("MaxPrime P1: {} \n ".format(p1))       
      if loopIter == 0 :    
@@ -169,7 +165,8 @@ def goldbachConjecture(n, p, debug=False):
      pSum.append(p1)     
      if debug :
         print("pSum : {} \n ".format(pSum))           
-     n2 = (n - p1)                                                  
+     n2 = (n - p1)     
+                                                  
      if n2 != 0 :  
         if len(pSum) >= 2:          
             loopIter = 0
@@ -188,7 +185,6 @@ def goldbachConjecture(n, p, debug=False):
      if n2 == 0 :
   
          if len(pSum) > 2:
-       
            loopIter = 0
            pSum = [] #reset the sum 
            removeMax = True #but remove the latest MaxP we added
@@ -196,8 +192,8 @@ def goldbachConjecture(n, p, debug=False):
          if len(pSum) == 2:      
            # This is our Valid Pair, got it!.
            MaxPLen= int(len(maxP))
-           print("n: {}\nMaxP : {} \nPsum: {}\n".format(nStart,MaxPLen,pSum))
-           
+           if debug:
+            print("n: {}\nMaxP : {} \nPsum: {}\n".format(nStart,MaxPLen,pSum))
            return pSum
          
   return  goldbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
@@ -222,15 +218,14 @@ def goldbachConjecturePair(n:int,debug=False):
      runTime.append(itemTime)
      nAndPairs.append(x)
      nAndPairs.append(x1)
-     
      if debug:
-      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n MaxP {} \n".format(x,x1,itemTime))                     
+      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n".format(x,x1,itemTime))                     
               
    return runTime,nAndPairs      
              
 n = 100000
+debug=False
+t,p = goldbachConjecturePair(n , debug)
 
-t,p = goldbachConjecturePair(n , debug=False)
-
-print(" \n total Run Time: {} seconds \n".format(sum(t)))
+print("Goldbach prime pairs sums: {} \n total Run Time: {} seconds \n".format(p,sum(t)))
 #print("total Run Time: {} seconds \n Prime List: {}".format(sum(t),p))
