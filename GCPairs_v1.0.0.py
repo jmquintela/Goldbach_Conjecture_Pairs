@@ -206,7 +206,7 @@ def goldbachConjecturePair(n:int,debug=False):
    prime_toc = time.perf_counter()
    primeTime = prime_toc - prime_tic
    print("prime list runTime: {} \n".format(primeTime))
-   n = list(range(2, n+2,2))
+   n = list(range(1, n+2,2))
    nAndPairs=[]
    runTime=[]
    
@@ -223,7 +223,7 @@ def goldbachConjecturePair(n:int,debug=False):
               
    return runTime,nAndPairs      
              
-n = 100000
+n = 1000000
 debug=False
 t,p = goldbachConjecturePair(n , debug)
 
