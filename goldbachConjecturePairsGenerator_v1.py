@@ -135,9 +135,14 @@ def goldbachConjecture(n, p, debug=False):
   nStart = n  
   
   def goldbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):     
+    
+     if nStart<=2:
+      return [2]
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
-     
-     pList = p[:sliceN+1]     
+     print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
+  
+     pList = p[:sliceN+1]  
+     print(pList)   
      if debug :       
        print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))          
      if debug :       
@@ -204,7 +209,7 @@ def goldbachConjecturePair(n:int,debug=False):
    prime_toc = time.perf_counter()
    primeTime = prime_toc - prime_tic
    print("prime list runTime: {} \n".format(primeTime))
-   n = list(range(2, n+1,2))
+   n = list(range(2, n+2,2))
    nAndPairs=[]
    runTime=[]
    
@@ -222,8 +227,9 @@ def goldbachConjecturePair(n:int,debug=False):
               
    return runTime,nAndPairs      
              
-n = 10000
+n = 100000
 
 t,p = goldbachConjecturePair(n , debug=False)
 
 print(" \n total Run Time: {} seconds \n".format(sum(t)))
+#print("total Run Time: {} seconds \n Prime List: {}".format(sum(t),p))
