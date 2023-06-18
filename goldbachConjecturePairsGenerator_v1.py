@@ -139,7 +139,8 @@ def goldbachConjecture(n, p, debug=False):
      if nStart<=2:
       return [2]
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
-     print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
+     if debug:
+      print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
   
      pList = p[:sliceN+1]  
      print(pList)   
