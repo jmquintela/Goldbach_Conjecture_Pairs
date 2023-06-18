@@ -108,7 +108,7 @@ def primes(n):
    return np.array([2] + [i for i in range(3, end, 2)
        if not (composite[i // 8] & (1 << (i % 8)))], dtype = np.uint32)
     
-def golbachConjecture(n, p, debug=False):
+def goldbachConjecture(n, p, debug=False):
       
   if debug :       
    print("Primes: {} \n".format(p))  
@@ -151,16 +151,16 @@ def golbachConjecture(n, p, debug=False):
             loopIter = 0
             removeMax = True
             pSum = []
-            return golbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )       
+            return goldbachConjecturePairs(p,loopIter, nStart , maxP , pSum, removeMax,nStart,debug )       
         if n2 == 1:          
             removeMax = True
             loopIter = 0
             pSum = []            
-            return golbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )   
+            return goldbachConjecturePairs(p, loopIter, nStart, maxP , pSum, removeMax,nStart,debug )   
         if n2 != 1:        
              removeMax = False   
              loopIter += 1
-             return golbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)                       
+             return goldbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)                       
      if n2 == 0 :
   
          if len(pSum) > 2:
@@ -174,7 +174,7 @@ def golbachConjecture(n, p, debug=False):
            return pSum   
   return  golbachConjecturePairs(p, loopIter,n,maxP,pSum,removeMax ,nStart,debug)
 
-def golbachConjecturePair(n:int,debug=False):
+def goldbachConjecturePair(n:int,debug=False):
   
    '''This writes on pair each one'''   
    prime_tic = time.perf_counter()  
@@ -186,7 +186,7 @@ def golbachConjecturePair(n:int,debug=False):
    runTime=[]
    for e,x in enumerate(n):
      gold_tic = time.perf_counter()   
-     x1 = golbachConjecture(x ,p, debug)
+     x1 = goldbachConjecture(x ,p, debug)
      gold_toc = time.perf_counter()
      itemTime = gold_toc - gold_tic
      runTime.append(itemTime)
@@ -201,4 +201,4 @@ def golbachConjecturePair(n:int,debug=False):
              
 n = 100000
 
-print(golbachConjecturePair(n , debug=False))
+print(goldbachConjecturePair(n , debug=False))
