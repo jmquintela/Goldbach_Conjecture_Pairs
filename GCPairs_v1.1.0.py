@@ -10,7 +10,8 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
   l = initialL[indexSlicers[0]:indexSlicers[1]]
   
   if debug:
-      print("index Slicers: {} \n\n l: {} \n\n n : {} \n\n ".format(indexSlicers,l,n))     
+      
+      print("index Slicers: {} \n n : {} \n ".format(indexSlicers,n))     
   
   for x,v in enumerate(l):
   
@@ -47,6 +48,7 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
   #Give us the last appenden object 
        
 def equalOrSmallerIndexOnListToN(n:int, l:list, debug=False):  
+  
     # l is a sorted list
     
     lenL = len(l)
@@ -56,58 +58,63 @@ def equalOrSmallerIndexOnListToN(n:int, l:list, debug=False):
     initialL = l
     d = 100
     
-    def FindNearNumberbyHalfingSignComparison(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
+    def findIndex(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
              
       ifNBiggerThanlenL = ( initialL[-1] <= n)    
       if ifNBiggerThanlenL:    
-        return lenL-1        
+        return lenL-1         
       ifLenNLessorEqualltoD = (lenL <= d)
-       
+     
       if  ifLenNLessorEqualltoD:    
         #we short the loop when we reach d element        
         return nearestEqualOrSmallerIndex(n,indexSlicers,initialL,debug)          
       
       #We pick a random position on this range  
-                       
-      random = int(randrange(lenL-1))
       
-      index = indexSlicers[0] + random
-      value = initialL[index] 
-      conditions=[]
+      div = 15
+      part = int(lenL / div)   
+      N = list(range(0,div,1))
+      maxL = len(initialL)
+      for i in N:
+        
+        random1 = int(randrange(1,part,1)) 
+        #print(i)
+        
+        i = (i-1)*part
        
-      IfBigger = ( value < n)
-      IfEqual = (value == n)
-      IfLess = ( value > n)
-      
-      if debug:
+        #print("i : {}".format(i))
+        #print("random : {}".format(random))
         
-       conditions.append(IfBigger)
-       conditions.append(IfEqual)
-       conditions.append(IfLess)
-       print( "lenL : {}, n: {} \n Conditions: {} \n Value :  {}\n Index :  {}  \n Slicing index : {} \n".format(lenL,n,conditions,value,index,indexSlicers) )
-  
-      if IfEqual:
+        random = indexSlicers[0]+ i+random1
+        #with this we max the value of random so it soesnt outbound the list
+        if random >= maxL:
+          random = maxL -1
+        if debug: 
+         print("part:{} \n , i : {} \n , random1 : {} \n lenL = {}".format(part,i,random1,lenL))
+        # print(len(initialL))
+        #print(len(N))
+        v = initialL[random]
+        
+        #print("value: {}".format(v))
+        #print(v)
+        
+        if v == n :
+          return random
+        if v < n : 
+          if random > indexSlicers[0]: 
+           indexSlicers[0] = random  
+          #print("slicer down : {} \n".format(indexSlicers[0]))
+        if v > n :
+          if random < indexSlicers[1]: 
+           indexSlicers[1] = random
+          #print("slicer up : {} \n".format(indexSlicers[1]))    
+        
+      lenL = indexSlicers[1] - indexSlicers[0]
+      #print("lenL {} \n".format(lenL))
+      return findIndex(d, n, lenL, indexSlicers, initialL, debug )    
     
-         return  index
-        
-      if IfBigger:
-        
-         indexSlicers[0] = index          
-         l = initialL[indexSlicers[0]:indexSlicers[1]]
-         lenL = len(l)
-         
-         return FindNearNumberbyHalfingSignComparison(d,n, lenL,indexSlicers, initialL, debug )
-      
-      #and slice the parts from the array that are   
-
-      if IfLess:
-         indexSlicers[1] = index                   
-         l = initialL[indexSlicers[0]:indexSlicers[1]]
-         lenL = len(l)
-         return FindNearNumberbyHalfingSignComparison(d,n , lenL ,indexSlicers, initialL, debug)
-      
-      
-    return FindNearNumberbyHalfingSignComparison(d, n, lenL, indexSlicers, initialL, debug )
+    
+    return findIndex(d, n, lenL, indexSlicers, initialL, debug )
    
 def primes(n):
    # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
@@ -140,8 +147,11 @@ def goldbachConjecture(n, p, debug=False):
       MaxPLen = 0
       pSum=[2]
       return pSum ,MaxPLen
-    
+     if debug:
+      print("n: {}".format(n))
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
+     if debug:
+      print("SliceN: {}\n p :{}".format(sliceN,p))
      
      if debug:
       print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
@@ -159,13 +169,17 @@ def goldbachConjecture(n, p, debug=False):
      p1 = pList[-1]
      
      if debug :         
-       print("MaxPrime P1: {} \n ".format(p1))       
+       print("MaxPrime P1: {} \n ".format(p1))     
+         
      if loopIter == 0 :    
         #We Only Append the Last Avaiblable Max on the start of the loop 
-        maxP.append(p1)            
+        maxP.append(p1)       
+             
      if debug :         
+       
         print("maxP : {} \n".format(maxP))         
      pSum.append(p1)     
+     
      if debug :
         print("pSum : {} \n ".format(pSum))           
      n2 = (n - p1)     
@@ -204,7 +218,7 @@ def goldbachConjecture(n, p, debug=False):
       
   return Psum,MaxPLen
 
-def goldbachConjecturePair(n:int,debug=False):
+def goldbachConjecturePairsToN(n:int,debug=False):
   
    '''This writes on pair each one'''   
    prime_tic = time.perf_counter()  
@@ -216,8 +230,9 @@ def goldbachConjecturePair(n:int,debug=False):
    nAndPairs=[]
    runTime=[]
    maxP=0
-   costlyItem=float(0)
-   recursionCount=0
+   itemTimeCost=[]
+   recursionCount=[]
+   currentNumbers=[]
    
    for e,x in enumerate(n):
      
@@ -228,24 +243,24 @@ def goldbachConjecturePair(n:int,debug=False):
      runTime.append(itemTime)
      nAndPairs.append(x)
      nAndPairs.append(x1) 
+     itemTimeCost.append(itemTime)
+     currentNumbers.append(x)
+     recursionCount.append(maxP)
      
-     if itemTime >= costlyItem:
-       costlyItem = itemTime
-       costlyNumber = x
-     if maxP >= recursionCount :
-       recursionCount = maxP
-       currentBiggerNumberofRecursion = x
      
      if debug:
-      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n".format(x,x1,itemTime,currentBiggerNumberofRecursion,recursionCount ))                     
-              
-   return runTime,nAndPairs  ,recursionCount,currentBiggerNumberofRecursion  ,costlyItem ,costlyNumber
+      print("\n Number : {} \n Pairs = {}\n RunTime = {} Secs \n recursion number: {} \n".format(x,x1,itemTimeCost,recursionCount ))                     
+   
+
+   
+   return runTime, nAndPairs ,recursionCount, itemTimeCost , currentNumbers
    
              
-n = 10000
+n = 50000
 debug=False
-t,p,r,Nr,Ci,Cn= goldbachConjecturePair(n , debug)
+t,p,rC,iTC,cN= goldbachConjecturePairsToN(n , debug)
 
-print("total Run Time: {} seconds \n biggest Recursion count : {}\n Costly number : {} \n Costly Item:{}\n Constly Number: {}\n".format(sum(t),r,Nr,Ci ,Cn))
-#print("total Run Time: {} seconds \n Prime List: {}".format(sum(t),p))
+print("n number: {} \n total Run Time: {} seconds \n ".format(n,sum(t)))
+
+#print("prime Pairs : {} \n total Run Time: {} seconds \n biggest Recursion count : {}\n recursionCountMax,: {} \n recursionPattern: {} \n N number order by recursion number  : {} \n Biggest Costly Number: {}\n".format(p,sum(t),rC,rC2,rCM ,cN,cN2,cNM))
 
