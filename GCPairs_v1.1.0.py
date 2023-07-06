@@ -47,6 +47,8 @@ def nearestEqualOrSmallerIndex(n:int, indexSlicers, initialL, debug=False):
   return n2
   #Give us the last appenden object 
        
+
+
 def equalOrSmallerIndexOnListToN(n:int, l:list, debug=False):  
   
     # l is a sorted list
@@ -60,7 +62,9 @@ def equalOrSmallerIndexOnListToN(n:int, l:list, debug=False):
     
     def findIndex(d:int,n:int,lenL:int,indexSlicers:list, initialL:list,debug=False) -> list:
              
-      ifNBiggerThanlenL = ( initialL[-1] <= n)    
+
+      ifNBiggerThanlenL = ( initialL[-1] <= n)   
+
       if ifNBiggerThanlenL:    
         return lenL-1         
       ifLenNLessorEqualltoD = (lenL <= d)
@@ -102,70 +106,83 @@ def equalOrSmallerIndexOnListToN(n:int, l:list, debug=False):
           return random
         if v < n : 
           if random > indexSlicers[0]: 
-           indexSlicers[0] = random  
+           indexSlicers[0] = random+1
           #print("slicer down : {} \n".format(indexSlicers[0]))
         if v > n :
           if random < indexSlicers[1]: 
-           indexSlicers[1] = random
+           indexSlicers[1] = random-1
           #print("slicer up : {} \n".format(indexSlicers[1]))    
         
       lenL = indexSlicers[1] - indexSlicers[0]
+
       #print("lenL {} \n".format(lenL))
+      
       return findIndex(d, n, lenL, indexSlicers, initialL, debug )    
     
     
     return findIndex(d, n, lenL, indexSlicers, initialL, debug )
    
-def primes(n):
-   # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-       
-   limit = n
-   end = limit + 1
-   composite = np.zeros(((end + 7) // 8,), dtype = np.uint8)
+
+def primes(limit: int):
    
-   for i in range(3, int(end ** 0.5 + 2.01)):       
-       if not (composite[i // 8] & (1 << (i % 8))):      
-           for j in range(i * i, end, i):                        
-             composite[j // 8] |= 1 << (j % 8)
-               
-   return np.array([2] + [i for i in range(3, end, 2)
-       if not (composite[i // 8] & (1 << (i % 8)))], dtype = np.uint32)
+   """Provide a list of all prime numbers <= the limit. by matheburg"""
     
+   is_prime = np.full((limit + 1, ), True)
+   is_prime[0:2] = False
+   for n in range(2, limit + 1):
+       if is_prime[n]:
+           is_prime[n**2::n] = False
+   return list(np.where(is_prime)[0])
+  
+  
 def goldbachConjecture(n, p, debug=False):
       
   if debug :       
-   print("Primes: {} \n".format(p))  
+   print("Primes: {} \n".format(p)) 
+
   pSum = [] 
   loopIter = 0 
   removeMax = False   
   maxP=[]  
   nStart = n  
   
+
+
   def goldbachConjecturePairs( p, loopIter = 0, n = 0 , maxP=[] , pSum=[], removeMax = False , nStart = 0 , debug=False ):     
     
      if nStart<=2:
+
       MaxPLen = 0
       pSum=[2]
       return pSum ,MaxPLen
      if debug:
+      
       print("n: {}".format(n))
+     
      sliceN = equalOrSmallerIndexOnListToN(n,p,debug)
+
      if debug:
+     
       print("SliceN: {}\n p :{}".format(sliceN,p))
      
      if debug:
+     
       print("N Pair number : {} \n current n : {} \n Index on p(sliceN): {} \n p[sliceN] : {} \n pList = p[:sliceN+1] : {}\n  ".format(nStart,n,sliceN,p[sliceN], p[:sliceN+1]  ))
      
      pList = p[:sliceN+1]   
      
      if debug :       
+     
        print("n {}\n loopiter: {}\n removeMax: {} \n".format(n,loopIter,removeMax))          
-     #we get ride of any MaxPrime who end up with a 1 at the end of the sum  
+       #we get ride of any MaxPrime who end up with a 1 at the end of the sum  
      if removeMax == True:
+       
        #only if Previous Solution didn't work we remove previous MAX     
        pList = [i for i in pList if i not in maxP]     
+       
        if debug :           
-        print("prime List with Max removed: {} \n, maxP: {} \n: ".format(pList, maxP))      
+         print("prime List with Max removed: {} \n, maxP: {} \n: ".format(pList, maxP))      
+     
      p1 = pList[-1]
      
      if debug :         
@@ -177,14 +194,17 @@ def goldbachConjecture(n, p, debug=False):
              
      if debug :         
        
-        print("maxP : {} \n".format(maxP))         
+        print("maxP : {} \n".format(maxP))   
+
      pSum.append(p1)     
      
      if debug :
-        print("pSum : {} \n ".format(pSum))           
+        print("pSum : {} \n ".format(pSum)) 
+                  
      n2 = (n - p1)     
                                                   
      if n2 != 0 :  
+        
         if len(pSum) >= 2:          
             loopIter = 0
             removeMax = True
@@ -198,18 +218,25 @@ def goldbachConjecture(n, p, debug=False):
         if n2 != 1:        
              removeMax = False   
              loopIter += 1
-             return goldbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)                       
+             return goldbachConjecturePairs(p,loopIter, n2 , maxP ,pSum , removeMax, nStart,debug)     
+                          
      if n2 == 0 :
   
          if len(pSum) > 2:
+           
            loopIter = 0
            pSum = [] #reset the sum 
            removeMax = True #but remove the latest MaxP we added
            return goldbachConjecturePairs(p, loopIter, nStart , maxP , pSum, removeMax,nStart,debug)      
+        
          if len(pSum) == 2:      
-           # This is our Valid Pair, got it!.
+           
+           # This is a Valid Pair, we got it!.
+
            MaxPLen = int(len(maxP))
+
            if debug:
+          
             print("n: {}\nMaxP : {} \nPsum: {}\n".format(nStart,MaxPLen,pSum))
            
            return pSum,MaxPLen
@@ -218,9 +245,12 @@ def goldbachConjecture(n, p, debug=False):
       
   return Psum,MaxPLen
 
-def goldbachConjecturePairsToN(n:int,debug=False):
+
+
+def TestPairsToN(n:int,debug=False):
   
-   '''This writes on pair each one'''   
+   '''This writes on pair each one''' 
+
    prime_tic = time.perf_counter()  
    p = primes(n)
    prime_toc = time.perf_counter()
@@ -234,12 +264,15 @@ def goldbachConjecturePairsToN(n:int,debug=False):
    recursionCount=[]
    currentNumbers=[]
    
+
    for e,x in enumerate(n):
      
      gold_tic = time.perf_counter()   
      x1,maxP = goldbachConjecture(x,p,debug)
      gold_toc = time.perf_counter()
+
      itemTime = gold_toc - gold_tic
+
      runTime.append(itemTime)
      nAndPairs.append(x)
      nAndPairs.append(x1) 
@@ -255,12 +288,14 @@ def goldbachConjecturePairsToN(n:int,debug=False):
    
    return runTime, nAndPairs ,recursionCount, itemTimeCost , currentNumbers
    
-             
-n = 50000
+
+#give me list to n
+#              
+n = 10000
+
 debug=False
-t,p,rC,iTC,cN= goldbachConjecturePairsToN(n , debug)
 
-print("n number: {} \n total Run Time: {} seconds \n ".format(n,sum(t)))
+t,p,rC,iTC,cN =  TestPairsToN(n , debug)
 
-#print("prime Pairs : {} \n total Run Time: {} seconds \n biggest Recursion count : {}\n recursionCountMax,: {} \n recursionPattern: {} \n N number order by recursion number  : {} \n Biggest Costly Number: {}\n".format(p,sum(t),rC,rC2,rCM ,cN,cN2,cNM))
 
+print("n number: {} \n total Run Time: {} seconds \n Pairs: {} ".format(n,sum(t),p))
