@@ -1,2 +1,2 @@
 # Goldbach_Conjecture_Pairs
-Decompose of pair numbers into the Sum of two primes integer numbers.
+Pair numbers decomposal into sums of two primes integer numbers.
