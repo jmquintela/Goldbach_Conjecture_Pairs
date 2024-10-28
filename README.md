@@ -1,3 +1,3 @@
 # Goldbach_Conjecture_Pairs
 
-Use it to create a list of Prime Pairs who's sum is a pair number.
+Creates a list with Golbach pairs primes for the Nth number.
